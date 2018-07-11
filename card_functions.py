@@ -18,7 +18,21 @@ def initial_deal(shoe, running_count):
 
     running_count += get_card(player_hand, shoe)
     running_count += get_card(player_hand, shoe)
-    running_count += get_card(dealer_hand, shoe)
     hole_card_count = get_card(dealer_hand, shoe)
+    running_count += get_card(dealer_hand, shoe)
 
     return player_hand, dealer_hand, running_count, hole_card_count
+
+def hand_value(hand):
+    hand_total = 0
+    for card in hand:
+        hand_total += card.value
+    return hand_total
+
+def check_blackjack(hand):
+    # if hand doesn't have 2 cards can't be blackjack
+    if len(hand) == 2 and hand_value(hand) == 21:
+        return True
+
+    # return false by default
+    return False

@@ -1,10 +1,10 @@
-import constants
+import config
 import math
 
 def get_bet(running_count, current_shoe_size):
 
     # allow for multiple betting systems
-    if constants.BETTING_SYSTEM is "MIT":
+    if config.BETTING_SYSTEM is "MIT":
         '''
             MIT system formula (true count >= 2)
 
@@ -27,6 +27,18 @@ def get_bet(running_count, current_shoe_size):
 
         # only care about true counts that are bigger than one
         if true_count <= 1:
-            return constants.TABLE_MIN
+            return config.TABLE_MIN
         else:
-            return (true_count - 1) * constants.BETTING_UNIT
+            return (true_count - 1) * config.BETTING_UNIT
+
+def player_lose(player_balance, bet):
+    return player_balance - bet
+
+def player_push(player_balance, bet):
+    return player_balance
+
+def player_win(player_balance, bet):
+    return player_balance + bet
+
+def player_win_blackjack(player_balance, bet):
+    return player_balance + (config.BLACKJACK_PAYOUT * bet)

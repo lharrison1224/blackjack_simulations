@@ -1,24 +1,24 @@
 import deck
-import constants
-import card_functions
-import bet_functions
+import config
+import card_functions as cf
+import bet_functions as bf
 from random import randint
 
 def main():
     # loop for multiple shoes
-    for shoe_number in range(constants.NUM_SHOES):
+    for shoe_number in range(config.NUM_SHOES):
 
         ##### ACTIONS RELATED TO DECK
         # initialize the shoe
-        shoe = deck.create_shoe(constants.NUM_DECKS)
+        shoe = deck.create_shoe(config.NUM_DECKS)
         # initialize running count
         running_count = 0
         # randomly generate a cut card, i.e. num cards that must be dealt
-        cut_card = len(shoe) - randint(int(len(shoe)*constants.MIN_DECK_PENETRATION), int(len(shoe)*constants.MAX_DECK_PENETRATION))
+        cut_card = len(shoe) - randint(int(len(shoe)*config.MIN_DECK_PENETRATION), int(len(shoe)*config.MAX_DECK_PENETRATION))
 
         ##### ACTIONS RELATED TO BETTING
         # give player initial amount of chips
-        player_balance = constants.MAX_BANKROLL
+        player_balance = config.MAX_BANKROLL
         # to be toggled if player_balance hits <= 0
         out_of_money = False
 
@@ -32,15 +32,28 @@ def main():
                 break
 
             # get the bet based on count and remaining deck
-            current_bet = bet_functions.get_bet(running_count, len(shoe))
-            # if the player does not have enough money to make optimal bet
+            current_bet = bf.get_bet(running_count, len(shoe))
+            # if the player does not have enough money to make optimal bet, bet all
             if current_bet > player_balance:
                 current_bet = player_balance
-            # subtract the bet from the players hand
-            player_balance -= current_bet
 
             # deal
-            player_hand, dealer_hand, running_count, hole_card_count = card_functions.initial_deal(shoe, running_count)
+            player_hand, dealer_hand, running_count, hole_card_count = cf.initial_deal(shoe, running_count)
+
+            # if dealer has blackjack and player has no blackjack
+            if cf.check_blackjack(dealer_hand) and not cf.check_blackjack(player_hand):
+                player_balance = bf.player_lose(player_balance, current_bet)
+            # if both dealer and player have blackjack
+            elif cf.check_blackjack(dealer_hand) and cf.check_blackjack(player_hand):
+                player_balance = bf.player_push(player_balance, current_bet)
+            # if player has blackjack and dealer has no blackjack
+            elif cf.check_blackjack(player_hand) and not cf.check_blackjack(dealer_hand):
+                player_balance = bf.player_win_blackjack(player_balance, current_bet)
+            # if no blackjacks
+            else:
+
+
+
 
 
 
