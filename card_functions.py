@@ -36,3 +36,9 @@ def check_blackjack(hand):
 
     # return false by default
     return False
+
+def check_aces(hand):
+    for card in hand:
+        if card.value == 11:
+            return True
+    return False

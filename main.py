@@ -51,6 +51,7 @@ def main():
                 player_balance = bf.player_win_blackjack(player_balance, current_bet)
             # if no blackjacks
             else:
+                # get player action
 
 
 
